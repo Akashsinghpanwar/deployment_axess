@@ -1,5 +1,3 @@
-# Axess Intelligence Chat -
-
 # Axess Corrosion AI Assistant
 
 ## 📌 Why We Built This
@@ -11,7 +9,7 @@ At **Axess Corrosion**, we realized that while our website and brochures contain
 
 We needed a smarter and more **interactive way** to share our knowledge — something that makes it easy for anyone (technical or non-technical) to ask a question and instantly get the right answer.  
 
-That’s why we built our **AI-powered chatbot axess intelligence**, trained on Axess Corrosion’s complete knowledge base.
+That’s why we built our **AI-powered chatbot — Axess Intelligence**, trained on Axess Corrosion’s complete knowledge base.
 
 ---
 
@@ -44,6 +42,8 @@ We designed a full **data pipeline** and trained a custom AI model:
 4. **High-Level RAG Design**  
    - Ensures answers are **not just generic AI text**, but **factually correct** based on Axess Corrosion’s data.  
    - Allows the chatbot to handle **complex queries intelligently**.  
+
+⚠️ **Note:** The full data pipeline and training model code is kept in a **private repository** for security and confidentiality reasons.
 
 The result: a chatbot that feels as natural as GPT but is **100% focused on Axess Corrosion**.
 
@@ -85,13 +85,12 @@ The **Axess Corrosion AI Assistant** was necessary because:
 - Traditional brochures and static websites are **not enough**.  
 - A chatbot makes knowledge **accessible, interactive, and intelligent**.  
 
-We built train a model on data and  build a **high-level RAG-powered system** that delivers **accurate, company-specific answers**.  
+We built and trained a model on company data and developed a **high-level RAG-powered system** that delivers **accurate, company-specific answers**.  
 And in the future, we will expand it into **Agent Mode** to handle documents, workflows, and more.
 
 This is a **big step forward** in how Axess Corrosion communicates, engages, and grows with technology.  
 
-
-## 📁 Project Structure
+## 📁 Project Structure(This is the interface of our chatbot. We built it using React.js, making it highly attractive, interactive, and fully responsive.)
 
 ```
 axess-corrosion-chat/
