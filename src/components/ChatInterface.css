@@ -1,7 +1,9 @@
 .chat-interface {
   width: 100%;
-  max-width: 800px;
-  height: 600px;
+  max-width: min(92vw, 800px);
+  height: min(82svh, 640px);
+  max-height: 100%;
+  margin: 0;                /* avoid auto-centering via margins */
   backdrop-filter: blur(20px);
   border-radius: 20px;
   display: flex;
@@ -155,6 +157,7 @@
 
 .input-bar {
   padding: 20px;
+  padding-bottom: calc(20px + var(--safe-bottom)); /* Input bar safe padding on phones with notch/home bar */
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.02);
   border-radius: 0 0 20px 20px;
@@ -359,7 +362,7 @@
 @media (min-width: 1920px) {
   .chat-interface {
     max-width: 900px;
-    height: 650px;
+    height: min(85svh, 680px);
   }
   
   .message {
@@ -380,7 +383,7 @@
 @media (min-width: 1366px) and (max-width: 1919px) {
   .chat-interface {
     max-width: 850px;
-    height: 620px;
+    height: min(84svh, 660px);
   }
   
   .message {
@@ -401,7 +404,7 @@
 @media (min-width: 1024px) and (max-width: 1365px) {
   .chat-interface {
     max-width: 800px;
-    height: 580px;
+    height: min(83svh, 640px);
   }
   
   .message {
@@ -422,7 +425,7 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   .chat-interface {
     max-width: 95vw;
-    height: 550px;
+    height: min(82svh, 620px);
   }
   
   .message {
@@ -442,9 +445,9 @@
 /* Tablets */
 @media (max-width: 767px) {
   .chat-interface {
-    height: 500px;
-    border-radius: 16px;
     max-width: 100vw;
+    height: min(78svh, 560px);             /* a bit shorter on small phones */
+    border-radius: 16px;
   }
   
   .messages-container {
@@ -453,6 +456,7 @@
   
   .input-bar {
     padding: 16px;
+    padding-bottom: calc(16px + var(--safe-bottom));
   }
   
   .message {
@@ -480,7 +484,7 @@
 /* Mobile */
 @media (max-width: 480px) {
   .chat-interface {
-    height: 400px;
+    height: min(78svh, 520px);
     border-radius: 12px;
   }
   
@@ -490,6 +494,7 @@
   
   .input-bar {
     padding: 12px;
+    padding-bottom: calc(12px + var(--safe-bottom));
   }
   
   .message {
@@ -534,7 +539,7 @@
 /* Small Mobile */
 @media (max-width: 360px) {
   .chat-interface {
-    height: 350px;
+    height: min(76svh, 480px);
     border-radius: 10px;
   }
   
@@ -544,6 +549,7 @@
   
   .input-bar {
     padding: 10px;
+    padding-bottom: calc(10px + var(--safe-bottom));
   }
   
   .message {
@@ -584,7 +590,7 @@
 /* Landscape orientation adjustments */
 @media (max-height: 500px) and (orientation: landscape) {
   .chat-interface {
-    height: 300px;
+    height: min(74svh, 400px);
   }
   
   .messages-container {
@@ -593,6 +599,7 @@
   
   .input-bar {
     padding: 10px;
+    padding-bottom: calc(10px + var(--safe-bottom));
   }
   
   .empty-state-content h3 {
