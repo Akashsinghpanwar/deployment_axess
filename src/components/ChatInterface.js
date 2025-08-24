@@ -7,43 +7,44 @@ const ChatInterface = ({
   isLoading, 
   isRecording, 
   onStartRecording, 
-  onStopRecording,
-  isDarkMode
+  onStopRecording, 
+  isDarkMode 
 }) => {
-  const [inputMessage, setInputMessage] = useState('');
+  const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // Handle sending message
-  const handleSendMessage = () => {
-    if (!inputMessage.trim() || isLoading) return;
-    
-    onSendMessage(inputMessage.trim());
-    setInputMessage('');
-    setIsTyping(false);
   };
 
-  // Handle key press
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    if (isRecording) {
+      // Auto-scroll to bottom when recording starts
+      scrollToBottom();
+    }
+  }, [isRecording]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputValue.trim() && !isLoading) {
+      onSendMessage(inputValue.trim());
+      setInputValue('');
     }
   };
 
-  // Handle input change
-  const handleInputChange = (e) => {
-    setInputMessage(e.target.value);
-    setIsTyping(e.target.value.length > 0);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
   };
 
-  // Handle microphone button
   const handleMicClick = () => {
     if (isRecording) {
       onStopRecording();
@@ -52,93 +53,101 @@ const ChatInterface = ({
     }
   };
 
-  // Copy message to clipboard
-  const copyMessage = (text) => {
+  const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
-      // You can add a toast notification here
-      console.log('Message copied to clipboard');
+      // You could add a toast notification here
+      console.log('Text copied to clipboard');
+    });
+  };
+
+  const formatTimestamp = (timestamp) => {
+    return new Date(timestamp).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
     });
   };
 
   return (
     <div className={`chat-interface ${isDarkMode ? 'dark' : 'light'}`}>
-      {/* Messages Container */}
       <div className="messages-container">
         {messages.length === 0 ? (
           <div className="empty-state">
             <div className="empty-state-content">
               <h3>Welcome to Axess Intelligence</h3>
-              <p>Ask anything the way you want. I'm here to help with Axess products, services, and technical specifications.</p>
+              <p>Ask anything the way you want - type or use voice!</p>
             </div>
           </div>
         ) : (
           <div className="messages-list">
             {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`message ${message.sender} ${message.isError ? 'error' : ''}`}
-              >
+              <div key={message.id} className={`message ${message.sender} ${message.isError ? 'error' : ''}`}>
                 <div className="message-content">
-                  <div className="message-text">
-                    {message.text}
-                    {message.sender === 'assistant' && message.text && (
-                      <button
-                        className="copy-button"
-                        onClick={() => copyMessage(message.text)}
-                        aria-label="Copy message"
-                      >
-                        📋
-                      </button>
-                    )}
-                  </div>
+                  <div className="message-text">{message.text}</div>
                   <div className="message-timestamp">
-                    {message.timestamp}
+                    {formatTimestamp(message.timestamp)}
+                    <button 
+                      className="copy-button" 
+                      onClick={() => copyToClipboard(message.text)}
+                      title="Copy message"
+                    >
+                      📋
+                    </button>
                   </div>
                 </div>
               </div>
             ))}
-            
-            {/* Loading indicator */}
             {isLoading && (
-              <div className="message assistant loading-message">
+              <div className="message assistant">
                 <div className="message-content">
-                  <div className="message-text">
-                    <div className="typing-indicator">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </div>
+                  <div className="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                   </div>
                 </div>
               </div>
             )}
-            
-            <div ref={messagesEndRef} />
+            {isRecording && (
+              <div className="message assistant">
+                <div className="message-content">
+                  <div className="recording-indicator">
+                    <div className="recording-dot"></div>
+                    <span style={{ marginLeft: '8px', color: '#ef4444' }}>
+                      Listening... Speak now!
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Bar */}
-      <div className="input-bar">
+      <form onSubmit={handleSubmit} className="input-bar">
         <div className="input-container">
           <textarea
             ref={inputRef}
             className="message-input"
-            value={inputMessage}
-            onChange={handleInputChange}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Type your message..."
+            placeholder="Type your message or use voice..."
+            disabled={isLoading || isRecording}
             rows={1}
-            disabled={isLoading}
+            style={{
+              resize: 'none',
+              minHeight: '20px',
+              maxHeight: '100px'
+            }}
           />
-          
           <div className="input-buttons">
-            {/* Microphone Button */}
             <button
+              type="button"
               className={`mic-button ${isRecording ? 'recording' : ''}`}
               onClick={handleMicClick}
               disabled={isLoading}
-              aria-label={isRecording ? 'Stop recording' : 'Start recording'}
+              title={isRecording ? 'Stop recording' : 'Start voice recording'}
             >
               {isRecording ? (
                 <div className="recording-indicator">
@@ -148,19 +157,17 @@ const ChatInterface = ({
                 '🎤'
               )}
             </button>
-
-            {/* Send Button */}
             <button
-              className={`send-button ${isTyping ? 'active' : ''}`}
-              onClick={handleSendMessage}
-              disabled={!isTyping || isLoading}
-              aria-label="Send message"
+              type="submit"
+              className={`send-button ${inputValue.trim() ? 'active' : ''}`}
+              disabled={!inputValue.trim() || isLoading || isRecording}
+              title="Send message"
             >
-              ✈️
+              ➤
             </button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

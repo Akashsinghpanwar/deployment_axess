@@ -13,6 +13,7 @@ function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [recognition, setRecognition] = useState(null);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -52,11 +53,29 @@ function App() {
   };
 
   const startRecording = () => {
-    setIsRecording(true);
-    showToastMessage('Recording started...');
+    if (!recognition) {
+      showToastMessage('Voice recognition not supported in this browser.');
+      return;
+    }
+
+    try {
+      recognition.start();
+      setIsRecording(true);
+      showToastMessage('Recording started... Speak now!');
+    } catch (error) {
+      console.error('Error starting recognition:', error);
+      showToastMessage('Error starting voice recognition. Please try again.');
+    }
   };
 
   const stopRecording = () => {
+    if (recognition) {
+      try {
+        recognition.stop();
+      } catch (error) {
+        console.error('Error stopping recognition:', error);
+      }
+    }
     setIsRecording(false);
     showToastMessage('Recording stopped.');
   };
@@ -66,6 +85,67 @@ function App() {
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
   };
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const newRecognition = new SpeechRecognition();
+      
+      newRecognition.continuous = false;
+      newRecognition.interimResults = false;
+      newRecognition.lang = 'en-US';
+      newRecognition.maxAlternatives = 1;
+
+      newRecognition.onstart = () => {
+        setIsRecording(true);
+        showToastMessage('Recording... Speak now!');
+      };
+
+      newRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        console.log('Voice transcript:', transcript);
+        
+        // Send the transcribed text as a message
+        sendMessage(transcript);
+      };
+
+      newRecognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsRecording(false);
+        
+        let errorMessage = 'Voice recognition failed. Please try typing instead.';
+        if (event.error === 'no-speech') {
+          errorMessage = 'No speech detected. Please try speaking again.';
+        } else if (event.error === 'audio-capture') {
+          errorMessage = 'Microphone not found. Please check your microphone.';
+        } else if (event.error === 'not-allowed') {
+          errorMessage = 'Microphone access denied. Please allow microphone access.';
+        }
+        
+        showToastMessage(errorMessage);
+      };
+
+      newRecognition.onend = () => {
+        setIsRecording(false);
+      };
+
+      setRecognition(newRecognition);
+    } else {
+      console.warn('Speech recognition not supported in this browser');
+    }
+
+    // Cleanup function
+    return () => {
+      if (recognition) {
+        try {
+          recognition.stop();
+        } catch (error) {
+          console.error('Error stopping recognition during cleanup:', error);
+        }
+      }
+    };
+  }, []);
 
   return (
     <div className={`App ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
