@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Starfield from './components/Starfield';
 import FloatingProducts from './components/FloatingProducts';
@@ -13,7 +13,7 @@ function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [recognition, setRecognition] = useState(null);
+  const recognitionRef = useRef(null);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -33,17 +33,27 @@ function App() {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const assistantMessage = {
-        id: Date.now() + 1,
-        text: `Thank you for your message: "${message}". This is a demo response from Axess Intelligence.`,
-        sender: 'assistant',
-        timestamp: new Date().toLocaleTimeString()
-      };
+      // Call local endpoint
+      const response = await fetch('http://127.0.0.1:8000/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: message }),
+      });
 
-      setMessages(prev => [...prev, assistantMessage]);
+      if (response.ok) {
+        const data = await response.json();
+        const assistantMessage = {
+          id: Date.now() + 1,
+          text: data.answer, // Only display the answer field
+          sender: 'assistant',
+          timestamp: new Date().toLocaleTimeString()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        throw new Error('Failed to get response');
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       showToastMessage('Error sending message. Please try again.');
@@ -53,64 +63,27 @@ function App() {
   };
 
   const startRecording = () => {
-    if (!recognition) {
-      showToastMessage('Voice recognition not supported in this browser.');
-      return;
-    }
-
-    try {
-      recognition.start();
-      setIsRecording(true);
-      showToastMessage('Recording started... Speak now!');
-    } catch (error) {
-      console.error('Error starting recognition:', error);
-      showToastMessage('Error starting voice recognition. Please try again.');
-    }
-  };
-
-  const stopRecording = () => {
-    if (recognition) {
-      try {
-        recognition.stop();
-      } catch (error) {
-        console.error('Error stopping recognition:', error);
-      }
-    }
-    setIsRecording(false);
-    showToastMessage('Recording stopped.');
-  };
-
-  const showToastMessage = (message) => {
-    setToastMessage(message);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
-  };
-
-  // Initialize speech recognition
-  useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const newRecognition = new SpeechRecognition();
-      
-      newRecognition.continuous = false;
-      newRecognition.interimResults = false;
-      newRecognition.lang = 'en-US';
-      newRecognition.maxAlternatives = 1;
+      const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      recognition.maxAlternatives = 1;
 
-      newRecognition.onstart = () => {
+      recognition.onstart = () => {
         setIsRecording(true);
-        showToastMessage('Recording... Speak now!');
+        showToastMessage('Recording started... Speak now!');
       };
 
-      newRecognition.onresult = (event) => {
+      recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         console.log('Voice transcript:', transcript);
-        
-        // Send the transcribed text as a message
         sendMessage(transcript);
       };
 
-      newRecognition.onerror = (event) => {
+      recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         setIsRecording(false);
         
@@ -126,26 +99,38 @@ function App() {
         showToastMessage(errorMessage);
       };
 
-      newRecognition.onend = () => {
+      recognition.onend = () => {
         setIsRecording(false);
       };
 
-      setRecognition(newRecognition);
-    } else {
-      console.warn('Speech recognition not supported in this browser');
-    }
-
-    // Cleanup function
-    return () => {
-      if (recognition) {
-        try {
-          recognition.stop();
-        } catch (error) {
-          console.error('Error stopping recognition during cleanup:', error);
-        }
+      try {
+        recognition.start();
+      } catch (error) {
+        console.error('Error starting recognition:', error);
+        showToastMessage('Error starting voice recognition. Please try again.');
       }
-    };
-  }, []);
+    } else {
+      showToastMessage('Voice recognition not supported in this browser.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (error) {
+        console.error('Error stopping recognition:', error);
+      }
+    }
+    setIsRecording(false);
+    showToastMessage('Recording stopped.');
+  };
+
+  const showToastMessage = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
 
   return (
     <div className={`App ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
