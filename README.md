@@ -1,6 +1,17 @@
+<div style="text-align: center; margin: 20px 0;">
+  <img 
+    src="https://s3.eu-west-1.amazonaws.com/assets.stepchangeinsafety.net/axess-corrosion.png" 
+    alt="Axess Corrosion Chatbot Interface" 
+    style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" 
+  />
+  <p style="font-size: 16px; color: #444; margin-top: 8px;">
+   
+  </p>
+</div>
+
 # Axess Corrosion AI Assistant
 
-## 📌 Why We Built This
+##  Why We Built This
 
 At **Axess Corrosion**, we realized that while our website and brochures contained all the technical details about our products, very few people were actually reading them.  
 - Customers often struggled to **find pinpoint information** quickly.  
