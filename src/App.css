@@ -69,8 +69,36 @@
   }
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
+/* Responsive Design - Laptop Specific */
+/* Large Laptops (17-inch and above) */
+@media (min-width: 1920px) {
+  .main-content {
+    padding: 25px;
+    padding-top: 140px;
+    max-width: 1400px;
+  }
+}
+
+/* Standard Laptops (15-16 inch) */
+@media (min-width: 1366px) and (max-width: 1919px) {
+  .main-content {
+    padding: 20px;
+    padding-top: 130px;
+    max-width: 1200px;
+  }
+}
+
+/* Small Laptops (13-14 inch) */
+@media (min-width: 1024px) and (max-width: 1365px) {
+  .main-content {
+    padding: 18px;
+    padding-top: 120px;
+    max-width: 1000px;
+  }
+}
+
+/* Mini Laptops (10-12 inch) */
+@media (min-width: 768px) and (max-width: 1023px) {
   .main-content {
     padding: 15px;
     padding-top: 110px;
@@ -78,7 +106,8 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Tablets */
+@media (max-width: 767px) {
   .main-content {
     padding: 10px;
     padding-top: 100px;
@@ -95,6 +124,7 @@
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
   .main-content {
     padding: 5px;
@@ -107,6 +137,7 @@
   }
 }
 
+/* Small Mobile */
 @media (max-width: 360px) {
   .main-content {
     padding: 3px;

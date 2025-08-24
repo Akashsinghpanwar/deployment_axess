@@ -182,8 +182,96 @@
   }
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
+/* Responsive Design - Laptop Specific */
+/* Large Laptops (17-inch and above) */
+@media (min-width: 1920px) {
+  .logo-container {
+    top: 40px;
+  }
+  
+  .logo-text {
+    font-size: 3.2rem;
+  }
+  
+  .logo-axess {
+    font-size: 3.6rem;
+  }
+  
+  .logo-intelligence {
+    font-size: 1.4rem;
+  }
+  
+  .logo-glow {
+    width: 240px;
+    height: 240px;
+  }
+  
+  .logo-glow-outer {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* Standard Laptops (15-16 inch) */
+@media (min-width: 1366px) and (max-width: 1919px) {
+  .logo-container {
+    top: 35px;
+  }
+  
+  .logo-text {
+    font-size: 3rem;
+  }
+  
+  .logo-axess {
+    font-size: 3.4rem;
+  }
+  
+  .logo-intelligence {
+    font-size: 1.3rem;
+  }
+  
+  .logo-glow {
+    width: 220px;
+    height: 220px;
+  }
+  
+  .logo-glow-outer {
+    width: 280px;
+    height: 280px;
+  }
+}
+
+/* Small Laptops (13-14 inch) */
+@media (min-width: 1024px) and (max-width: 1365px) {
+  .logo-container {
+    top: 30px;
+  }
+  
+  .logo-text {
+    font-size: 2.8rem;
+  }
+  
+  .logo-axess {
+    font-size: 3.2rem;
+  }
+  
+  .logo-intelligence {
+    font-size: 1.2rem;
+  }
+  
+  .logo-glow {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .logo-glow-outer {
+    width: 260px;
+    height: 260px;
+  }
+}
+
+/* Mini Laptops (10-12 inch) */
+@media (min-width: 768px) and (max-width: 1023px) {
   .logo-container {
     top: 25px;
   }
@@ -211,7 +299,8 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Tablets */
+@media (max-width: 767px) {
   .logo-container {
     top: 20px; /* Reduced to ensure it stays above chat on tablets */
     z-index: 1000; /* Maintain high z-index */
@@ -240,6 +329,7 @@
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
   .logo-container {
     top: 15px; /* Reduced to ensure it stays above chat on mobile */
@@ -269,6 +359,7 @@
   }
 }
 
+/* Small Mobile */
 @media (max-width: 360px) {
   .logo-container {
     top: 10px;

@@ -354,8 +354,72 @@
   }
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
+/* Responsive Design - Laptop Specific */
+/* Large Laptops (17-inch and above) */
+@media (min-width: 1920px) {
+  .chat-interface {
+    max-width: 900px;
+    height: 650px;
+  }
+  
+  .message {
+    max-width: 75%;
+  }
+  
+  .empty-state-content h3 {
+    font-size: 28px;
+  }
+  
+  .empty-state-content p {
+    font-size: 18px;
+    max-width: 500px;
+  }
+}
+
+/* Standard Laptops (15-16 inch) */
+@media (min-width: 1366px) and (max-width: 1919px) {
+  .chat-interface {
+    max-width: 850px;
+    height: 620px;
+  }
+  
+  .message {
+    max-width: 78%;
+  }
+  
+  .empty-state-content h3 {
+    font-size: 26px;
+  }
+  
+  .empty-state-content p {
+    font-size: 17px;
+    max-width: 450px;
+  }
+}
+
+/* Small Laptops (13-14 inch) */
+@media (min-width: 1024px) and (max-width: 1365px) {
+  .chat-interface {
+    max-width: 800px;
+    height: 580px;
+  }
+  
+  .message {
+    max-width: 80%;
+  }
+  
+  .empty-state-content h3 {
+    font-size: 24px;
+  }
+  
+  .empty-state-content p {
+    font-size: 16px;
+    max-width: 400px;
+  }
+}
+
+/* Mini Laptops (10-12 inch) */
+@media (min-width: 768px) and (max-width: 1023px) {
   .chat-interface {
     max-width: 95vw;
     height: 550px;
@@ -364,9 +428,19 @@
   .message {
     max-width: 85%;
   }
+  
+  .empty-state-content h3 {
+    font-size: 22px;
+  }
+  
+  .empty-state-content p {
+    font-size: 15px;
+    max-width: 350px;
+  }
 }
 
-@media (max-width: 768px) {
+/* Tablets */
+@media (max-width: 767px) {
   .chat-interface {
     height: 500px;
     border-radius: 16px;
@@ -403,6 +477,7 @@
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
   .chat-interface {
     height: 400px;
@@ -456,6 +531,7 @@
   }
 }
 
+/* Small Mobile */
 @media (max-width: 360px) {
   .chat-interface {
     height: 350px;
