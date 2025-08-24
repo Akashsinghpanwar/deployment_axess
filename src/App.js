@@ -156,11 +156,11 @@ function App() {
       {/* Theme Toggle */}
       <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
       
+      {/* Logo - Now positioned fixed */}
+      <Logo isDarkMode={isDarkMode} />
+      
       {/* Main Content */}
       <div className="main-content">
-        {/* Logo */}
-        <Logo isDarkMode={isDarkMode} />
-        
         {/* Chat Interface */}
         <ChatInterface 
           messages={messages}

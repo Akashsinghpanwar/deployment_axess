@@ -6,6 +6,7 @@ const FloatingProducts = ({ isDarkMode }) => {
   const animationRef = useRef(null);
   const lastTimeRef = useRef(0);
   const productsRef = useRef([]);
+  const frameCountRef = useRef(0);
 
   useEffect(() => {
     console.log('FloatingProducts component mounted');
@@ -36,15 +37,15 @@ const FloatingProducts = ({ isDarkMode }) => {
           baseX,
           y: window.innerHeight + Math.random() * 200,
           // 👇 px/sec में स्पीड रख रहे हैं (स्मूद और कंट्रोल्ड)
-          speedY: Math.random() * 60 + 40, // 40–100 px/sec ऊपर की ओर (smoother)
+          speedY: Math.random() * 50 + 30, // 30–80 px/sec ऊपर की ओर (smoother)
           rotation: Math.random() * 360,
-          rotationSpeed: (Math.random() - 0.5) * 1.5, // deg/sec (धीमा)
+          rotationSpeed: (Math.random() - 0.5) * 1, // deg/sec (धीमा)
           size,
           baseOpacity: Math.random() * 0.7 + 0.5, // Higher opacity for visibility
           opacity: 1,
           // 👇 gentle side-to-side
-          floatAmplitude: Math.random() * 15 + 10,
-          floatSpeed: Math.random() * 0.6 + 0.3, // rad/sec (slower for smoother movement)
+          floatAmplitude: Math.random() * 12 + 8,
+          floatSpeed: Math.random() * 0.4 + 0.2, // rad/sec (slower for smoother movement)
           floatPhase: Math.random() * Math.PI * 2,
           glowIntensity: Math.random() * 0.2 + 0.1, // More glow
           fading: false,
@@ -86,7 +87,7 @@ const FloatingProducts = ({ isDarkMode }) => {
         // fade प्रोग्रेस
         let opacity = p.baseOpacity;
         if (fading) {
-          fadeT = Math.min(1, fadeT + dt * 0.4); // ~2.5s में fade (smoother)
+          fadeT = Math.min(1, fadeT + dt * 0.3); // ~3.3s में fade (smoother)
           opacity = p.baseOpacity * (1 - fadeT);
         }
 
@@ -99,14 +100,14 @@ const FloatingProducts = ({ isDarkMode }) => {
             x: baseX,
             baseX,
             y: window.innerHeight + Math.random() * 200,
-            speedY: Math.random() * 60 + 40, // Smoother speed
+            speedY: Math.random() * 50 + 30, // Smoother speed
             rotation: Math.random() * 360,
-            rotationSpeed: (Math.random() - 0.5) * 1.5,
+            rotationSpeed: (Math.random() - 0.5) * 1,
             size,
             baseOpacity: Math.random() * 0.7 + 0.5, // Higher opacity
             opacity: 1,
-            floatAmplitude: Math.random() * 15 + 10,
-            floatSpeed: Math.random() * 0.6 + 0.3, // Slower for smoother movement
+            floatAmplitude: Math.random() * 12 + 8,
+            floatSpeed: Math.random() * 0.4 + 0.2, // Slower for smoother movement
             floatPhase: Math.random() * Math.PI * 2,
             glowIntensity: Math.random() * 0.2 + 0.1, // More glow
             fading: false,
@@ -126,9 +127,14 @@ const FloatingProducts = ({ isDarkMode }) => {
         };
       });
 
-      // Update ref and state less frequently for smoother animation
+      // Update ref immediately
       productsRef.current = updatedProducts;
-      setProducts(updatedProducts);
+      
+      // Update state less frequently (every 3 frames) to reduce lag
+      frameCountRef.current++;
+      if (frameCountRef.current % 3 === 0) {
+        setProducts(updatedProducts);
+      }
 
       animationRef.current = requestAnimationFrame(animate);
     };
@@ -153,6 +159,7 @@ const FloatingProducts = ({ isDarkMode }) => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       window.removeEventListener('resize', onResize);
       lastTimeRef.current = 0;
+      frameCountRef.current = 0;
     };
   }, [isDarkMode]);
 
@@ -194,7 +201,9 @@ const FloatingProducts = ({ isDarkMode }) => {
             transform: `rotate(${p.rotation}deg)`,
             filter: `brightness(${1 + p.glowIntensity})`,
             transition: 'none', // Remove transition for smoother animation
-            zIndex: 10
+            zIndex: 10,
+            willChange: 'transform, opacity', // Optimize for animations
+            transformStyle: 'preserve-3d' // Hardware acceleration
           }}
         >
           <div
@@ -211,6 +220,10 @@ const FloatingProducts = ({ isDarkMode }) => {
             className="product-image"
             onLoad={() => handleImgLoad(p.image)}
             onError={(e) => handleImgError(e, p.id)}
+            style={{
+              willChange: 'transform', // Optimize image animations
+              transform: 'translateZ(0)' // Force hardware acceleration
+            }}
           />
         </div>
       ))}

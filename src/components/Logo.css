@@ -1,8 +1,11 @@
 .logo-container {
-  position: relative;
-  z-index: 20;
-  margin-bottom: 40px;
+  position: fixed;
+  top: 30px; /* Reduced from 50px to ensure it's always above chat */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000; /* Increased to ensure it's always above everything */
   text-align: center;
+  pointer-events: none; /* Allow clicking through the logo */
 }
 
 .logo {
@@ -10,6 +13,7 @@
   display: inline-block;
   cursor: pointer;
   transition: all 0.3s ease;
+  pointer-events: auto; /* Re-enable pointer events for the logo itself */
 }
 
 .logo:hover {
@@ -17,7 +21,7 @@
 }
 
 .logo-text {
-  font-size: 4.5rem;
+  font-size: 2.8rem; /* Reduced from 3.5rem */
   font-weight: 900;
   letter-spacing: 0.1em;
   line-height: 1;
@@ -46,7 +50,7 @@
 
 .logo-axess {
   display: block;
-  font-size: 5rem;
+  font-size: 3.2rem; /* Reduced from 4rem */
   font-weight: 900;
   letter-spacing: 0.2em;
   margin-bottom: 10px;
@@ -76,7 +80,7 @@
 
 .logo-intelligence {
   display: block;
-  font-size: 1.8rem;
+  font-size: 1.2rem; /* Reduced from 1.4rem */
   font-weight: 400;
   letter-spacing: 0.3em;
   opacity: 0.9;
@@ -103,8 +107,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 300px;
-  height: 300px;
+  width: 200px; /* Reduced from 250px */
+  height: 200px; /* Reduced from 250px */
   border-radius: 50%;
   z-index: 1;
   animation: logoGlow 4s ease-in-out infinite alternate;
@@ -133,8 +137,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 400px;
-  height: 400px;
+  width: 260px; /* Reduced from 320px */
+  height: 260px; /* Reduced from 320px */
   border-radius: 50%;
   z-index: 0;
   animation: logoGlowOuter 6s ease-in-out infinite alternate;
@@ -180,50 +184,60 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .logo-container {
+    top: 20px; /* Reduced to ensure it stays above chat on tablets */
+    z-index: 1000; /* Maintain high z-index */
+  }
+  
   .logo-text {
-    font-size: 3rem;
+    font-size: 2.2rem; /* Reduced from 2.5rem */
   }
   
   .logo-axess {
-    font-size: 3.5rem;
+    font-size: 2.6rem; /* Reduced from 3rem */
   }
   
   .logo-intelligence {
-    font-size: 1.4rem;
+    font-size: 1rem; /* Reduced from 1.2rem */
   }
   
   .logo-glow {
-    width: 200px;
-    height: 200px;
+    width: 150px; /* Reduced from 180px */
+    height: 150px; /* Reduced from 180px */
   }
   
   .logo-glow-outer {
-    width: 250px;
-    height: 250px;
+    width: 180px; /* Reduced from 220px */
+    height: 180px; /* Reduced from 220px */
   }
 }
 
 @media (max-width: 480px) {
+  .logo-container {
+    top: 15px; /* Reduced to ensure it stays above chat on mobile */
+    z-index: 1000; /* Maintain high z-index */
+  }
+  
   .logo-text {
-    font-size: 2.5rem;
+    font-size: 1.8rem; /* Reduced from 2rem */
   }
   
   .logo-axess {
-    font-size: 3rem;
+    font-size: 2.2rem; /* Reduced from 2.5rem */
   }
   
   .logo-intelligence {
-    font-size: 1.2rem;
+    font-size: 0.9rem; /* Reduced from 1rem */
   }
   
   .logo-glow {
-    width: 150px;
-    height: 150px;
+    width: 120px; /* Reduced from 140px */
+    height: 120px; /* Reduced from 140px */
   }
   
   .logo-glow-outer {
-    width: 180px;
-    height: 180px;
+    width: 140px; /* Reduced from 160px */
+    height: 140px; /* Reduced from 160px */
   }
 }
 

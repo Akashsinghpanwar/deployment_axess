@@ -22,6 +22,7 @@
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
+  padding-top: 120px; /* Increased to provide space for logo */
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -68,6 +69,7 @@
 @media (max-width: 768px) {
   .main-content {
     padding: 10px;
+    padding-top: 100px; /* Increased to provide space for logo on tablets */
   }
   
   .toast-notification {
@@ -82,6 +84,7 @@
 @media (max-width: 480px) {
   .main-content {
     padding: 5px;
+    padding-top: 90px; /* Increased to provide space for logo on mobile */
   }
 }
 
