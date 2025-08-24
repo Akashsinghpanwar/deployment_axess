@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import './App.css';
-import Starfield from './components/Starfield';
-import FloatingProducts from './components/FloatingProducts';
-import ThemeToggle from './components/ThemeToggle';
-import Logo from './components/Logo';
 import ChatInterface from './components/ChatInterface';
+import FloatingProducts from './components/FloatingProducts';
+import Logo from './components/Logo';
+import Starfield from './components/Starfield';
+import ThemeToggle from './components/ThemeToggle';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -13,6 +13,7 @@ function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const recognitionRef = useRef(null);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -32,17 +33,27 @@ function App() {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const assistantMessage = {
-        id: Date.now() + 1,
-        text: `Thank you for your message: "${message}". This is a demo response from Axess Intelligence.`,
-        sender: 'assistant',
-        timestamp: new Date().toLocaleTimeString()
-      };
+      // Call local endpoint
+      const response = await fetch('http://127.0.0.1:8000/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: message }),
+      });
 
-      setMessages(prev => [...prev, assistantMessage]);
+      if (response.ok) {
+        const data = await response.json();
+        const assistantMessage = {
+          id: Date.now() + 1,
+          text: data.answer, // Only display the answer field
+          sender: 'assistant',
+          timestamp: new Date().toLocaleTimeString()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        throw new Error('Failed to get response');
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       showToastMessage('Error sending message. Please try again.');
@@ -52,11 +63,44 @@ function App() {
   };
 
   const startRecording = () => {
-    setIsRecording(true);
-    showToastMessage('Recording started...');
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        setIsRecording(true);
+        showToastMessage('Recording started...');
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        sendMessage(transcript);
+      };
+
+      recognition.onerror = (event) => {
+        showToastMessage('Voice recognition error.');
+        setIsRecording(false);
+      };
+
+      recognition.onend = () => {
+        setIsRecording(false);
+        showToastMessage('Recording stopped.');
+      };
+
+      recognition.start();
+    } else {
+      showToastMessage('Voice recognition not supported in this browser.');
+    }
   };
 
   const stopRecording = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
     setIsRecording(false);
     showToastMessage('Recording stopped.');
   };
