@@ -1,0 +1,36 @@
+.starfield-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  transition: background 0.5s ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.starfield-canvas.dark {
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+}
+
+.starfield-canvas.light {
+  background: linear-gradient(135deg, #87CEEB 0%, #98D8E8 50%, #B0E0E6 100%);
+}
+
+/* Ensure the canvas doesn't interfere with other elements */
+.starfield-canvas:focus {
+  outline: none;
+}
+
+/* Smooth transitions for any canvas changes */
+.starfield-canvas {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Optimize canvas rendering */
+.starfield-canvas {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}

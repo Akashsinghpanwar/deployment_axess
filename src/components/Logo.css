@@ -1,0 +1,241 @@
+.logo-container {
+  position: relative;
+  z-index: 20;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.logo {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.02);
+}
+
+.logo-text {
+  font-size: 4.5rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+  text-transform: uppercase;
+}
+
+.logo-container.dark .logo-text {
+  color: #ffffff;
+  text-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.8),
+    0 0 60px rgba(124, 58, 237, 0.6),
+    0 0 90px rgba(124, 58, 237, 0.4),
+    0 0 120px rgba(124, 58, 237, 0.2);
+}
+
+.logo-container.light .logo-text {
+  color: #333333;
+  text-shadow: 
+    0 0 30px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(255, 215, 0, 0.5),
+    0 0 90px rgba(255, 215, 0, 0.3),
+    0 0 120px rgba(255, 215, 0, 0.2);
+}
+
+.logo-axess {
+  display: block;
+  font-size: 5rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 3;
+}
+
+.logo-container.dark .logo-axess {
+  background: linear-gradient(135deg, #ffffff 0%, #e5e7eb 50%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+}
+
+.logo-container.light .logo-axess {
+  background: linear-gradient(135deg, #333333 0%, #666666 50%, #333333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+}
+
+.logo-subtitle {
+  margin-top: 5px;
+}
+
+.logo-intelligence {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  opacity: 0.9;
+  position: relative;
+  z-index: 3;
+}
+
+.logo-container.dark .logo-intelligence {
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 
+    0 0 15px rgba(124, 58, 237, 0.6),
+    0 0 30px rgba(124, 58, 237, 0.4);
+}
+
+.logo-container.light .logo-intelligence {
+  color: rgba(0, 0, 0, 0.7);
+  text-shadow: 
+    0 0 15px rgba(255, 215, 0, 0.6),
+    0 0 30px rgba(255, 215, 0, 0.4);
+}
+
+.logo-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  z-index: 1;
+  animation: logoGlow 4s ease-in-out infinite alternate;
+}
+
+.logo-container.dark .logo-glow {
+  background: radial-gradient(circle, 
+    rgba(124, 58, 237, 0.3) 0%, 
+    rgba(124, 58, 237, 0.2) 30%, 
+    rgba(124, 58, 237, 0.1) 60%, 
+    rgba(124, 58, 237, 0.05) 80%, 
+    transparent 100%);
+}
+
+.logo-container.light .logo-glow {
+  background: radial-gradient(circle, 
+    rgba(255, 215, 0, 0.3) 0%, 
+    rgba(255, 215, 0, 0.2) 30%, 
+    rgba(255, 215, 0, 0.1) 60%, 
+    rgba(255, 215, 0, 0.05) 80%, 
+    transparent 100%);
+}
+
+.logo-glow-outer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  z-index: 0;
+  animation: logoGlowOuter 6s ease-in-out infinite alternate;
+}
+
+.logo-container.dark .logo-glow-outer {
+  background: radial-gradient(circle, 
+    rgba(124, 58, 237, 0.1) 0%, 
+    rgba(124, 58, 237, 0.05) 50%, 
+    rgba(124, 58, 237, 0.02) 80%, 
+    transparent 100%);
+}
+
+.logo-container.light .logo-glow-outer {
+  background: radial-gradient(circle, 
+    rgba(255, 215, 0, 0.1) 0%, 
+    rgba(255, 215, 0, 0.05) 50%, 
+    rgba(255, 215, 0, 0.02) 80%, 
+    transparent 100%);
+}
+
+@keyframes logoGlow {
+  0% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+@keyframes logoGlowOuter {
+  0% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .logo-text {
+    font-size: 3rem;
+  }
+  
+  .logo-axess {
+    font-size: 3.5rem;
+  }
+  
+  .logo-intelligence {
+    font-size: 1.4rem;
+  }
+  
+  .logo-glow {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .logo-glow-outer {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 2.5rem;
+  }
+  
+  .logo-axess {
+    font-size: 3rem;
+  }
+  
+  .logo-intelligence {
+    font-size: 1.2rem;
+  }
+  
+  .logo-glow {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .logo-glow-outer {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .logo-glow,
+  .logo-glow-outer {
+    animation: none;
+  }
+  
+  .logo:hover {
+    transform: none;
+  }
+}
+
