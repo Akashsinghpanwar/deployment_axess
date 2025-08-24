@@ -25,6 +25,8 @@
   padding-top: 120px; /* Increased to provide space for logo */
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Toast Notification */
@@ -40,6 +42,8 @@
   z-index: 1000;
   backdrop-filter: blur(10px);
   animation: toastSlideUp 0.3s ease-out;
+  max-width: 90vw;
+  word-wrap: break-word;
 }
 
 .toast-notification.dark {
@@ -66,10 +70,19 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 15px;
+    padding-top: 110px;
+    max-width: 95vw;
+  }
+}
+
 @media (max-width: 768px) {
   .main-content {
     padding: 10px;
-    padding-top: 100px; /* Increased to provide space for logo on tablets */
+    padding-top: 100px;
+    max-width: 100vw;
   }
   
   .toast-notification {
@@ -78,13 +91,26 @@
     right: 10px;
     transform: none;
     text-align: center;
+    max-width: calc(100vw - 20px);
   }
 }
 
 @media (max-width: 480px) {
   .main-content {
     padding: 5px;
-    padding-top: 90px; /* Increased to provide space for logo on mobile */
+    padding-top: 90px;
+  }
+  
+  .toast-notification {
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main-content {
+    padding: 3px;
+    padding-top: 80px;
   }
 }
 

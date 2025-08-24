@@ -183,6 +183,34 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .logo-container {
+    top: 25px;
+  }
+  
+  .logo-text {
+    font-size: 2.5rem;
+  }
+  
+  .logo-axess {
+    font-size: 2.8rem;
+  }
+  
+  .logo-intelligence {
+    font-size: 1.1rem;
+  }
+  
+  .logo-glow {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .logo-glow-outer {
+    width: 230px;
+    height: 230px;
+  }
+}
+
 @media (max-width: 768px) {
   .logo-container {
     top: 20px; /* Reduced to ensure it stays above chat on tablets */
@@ -238,6 +266,63 @@
   .logo-glow-outer {
     width: 140px; /* Reduced from 160px */
     height: 140px; /* Reduced from 160px */
+  }
+}
+
+@media (max-width: 360px) {
+  .logo-container {
+    top: 10px;
+  }
+  
+  .logo-text {
+    font-size: 1.5rem;
+  }
+  
+  .logo-axess {
+    font-size: 1.8rem;
+  }
+  
+  .logo-intelligence {
+    font-size: 0.8rem;
+  }
+  
+  .logo-glow {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .logo-glow-outer {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .logo-container {
+    top: 10px;
+  }
+  
+  .logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .logo-axess {
+    font-size: 1.6rem;
+  }
+  
+  .logo-intelligence {
+    font-size: 0.7rem;
+  }
+  
+  .logo-glow {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .logo-glow-outer {
+    width: 100px;
+    height: 100px;
   }
 }
 

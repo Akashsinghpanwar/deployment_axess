@@ -171,6 +171,30 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .glowing-moon {
+    top: 70px;
+    right: 100px;
+    width: 100px;
+    height: 100px;
+  }
+  
+  .moon-core {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .moon-glow {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .moon-glow-outer {
+    width: 130px;
+    height: 130px;
+  }
+}
+
 @media (max-width: 768px) {
   .glowing-moon {
     top: 60px;
@@ -232,6 +256,63 @@
   
   .product-image {
     border-radius: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  .glowing-moon {
+    top: 30px;
+    right: 40px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .moon-core {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .moon-glow {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .moon-glow-outer {
+    width: 65px;
+    height: 65px;
+  }
+  
+  .floating-product {
+    border-radius: 8px;
+  }
+  
+  .product-image {
+    border-radius: 8px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .glowing-moon {
+    top: 20px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .moon-core {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .moon-glow {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .moon-glow-outer {
+    width: 50px;
+    height: 50px;
   }
 }
 
