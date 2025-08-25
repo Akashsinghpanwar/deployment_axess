@@ -370,28 +370,6 @@ function App() {
           {toastMessage}
         </div>
       )}
-
-      {/* Backend Status Indicator */}
-      <div className={`backend-status ${backendStatus} ${isDarkMode ? 'dark' : 'light'}`}>
-        Backend: {backendStatus === 'connected' ? '🟢 Connected' : 
-                  backendStatus === 'checking' ? '🟡 Checking...' : 
-                  backendStatus === 'error' ? '🟠 Error' : '🔴 Disconnected'}
-        <button 
-          onClick={testBackendConnection}
-          style={{
-            marginLeft: '10px',
-            padding: '4px 8px',
-            fontSize: '10px',
-            background: 'rgba(255, 255, 255, 0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '4px',
-            color: 'inherit',
-            cursor: 'pointer'
-          }}
-        >
-          Test
-        </button>
-      </div>
     </div>
   );
 }
