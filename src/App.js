@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 import Starfield from './components/Starfield';
 import FloatingProducts from './components/FloatingProducts';
@@ -13,7 +13,40 @@ function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [backendStatus, setBackendStatus] = useState('checking');
   const recognitionRef = useRef(null);
+
+  // Test backend connection on app load
+  useEffect(() => {
+    const testBackendConnection = async () => {
+      try {
+        console.log('Testing backend connection...');
+        const response = await fetch('http://127.0.0.1:8000/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query: 'test connection' }),
+        });
+        
+        if (response.ok) {
+          console.log('Backend is connected!');
+          setBackendStatus('connected');
+          showToastMessage('Backend connected successfully!');
+        } else {
+          console.log('Backend responded but with error status:', response.status);
+          setBackendStatus('error');
+          showToastMessage('Backend responded with error. Check your backend logs.');
+        }
+      } catch (error) {
+        console.error('Backend connection failed:', error);
+        setBackendStatus('disconnected');
+        showToastMessage('Cannot connect to backend. Make sure it\'s running on http://127.0.0.1:8000');
+      }
+    };
+
+    testBackendConnection();
+  }, []);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -34,6 +67,7 @@ function App() {
 
     try {
       // Call local endpoint
+      console.log('Sending message to backend:', message);
       const response = await fetch('http://127.0.0.1:8000/chat', {
         method: 'POST',
         headers: {
@@ -42,8 +76,11 @@ function App() {
         body: JSON.stringify({ query: message }),
       });
 
+      console.log('Backend response status:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('Backend response data:', data);
         const assistantMessage = {
           id: Date.now() + 1,
           text: data.answer, // Only display the answer field
@@ -52,11 +89,14 @@ function App() {
         };
         setMessages(prev => [...prev, assistantMessage]);
       } else {
-        throw new Error('Failed to get response');
+        console.error('Backend error status:', response.status);
+        const errorText = await response.text();
+        console.error('Backend error response:', errorText);
+        throw new Error(`Backend error: ${response.status} - ${errorText}`);
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      showToastMessage('Error sending message. Please try again.');
+      showToastMessage(`Connection error: ${error.message}. Please check if your backend is running on http://127.0.0.1:8000`);
     } finally {
       setIsLoading(false);
     }
@@ -132,6 +172,34 @@ function App() {
     setTimeout(() => setShowToast(false), 3000);
   };
 
+  const testBackendConnection = async () => {
+    try {
+      console.log('Testing backend connection...');
+      const response = await fetch('http://127.0.0.1:8000/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: 'test connection' }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Backend test response:', data);
+        setBackendStatus('connected');
+        showToastMessage('Backend test successful!');
+      } else {
+        console.log('Backend responded but with error status:', response.status);
+        setBackendStatus('error');
+        showToastMessage('Backend test failed. Check your backend logs.');
+      }
+    } catch (error) {
+      console.error('Backend connection failed:', error);
+      setBackendStatus('disconnected');
+      showToastMessage('Cannot connect to backend. Make sure it\'s running on http://127.0.0.1:8000');
+    }
+  };
+
   return (
     <div className={`App ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
       {/* Starfield Background */}
@@ -170,9 +238,15 @@ function App() {
           {toastMessage}
         </div>
       )}
+
+      {/* Backend Status Indicator */}
+      <div className={`backend-status ${backendStatus} ${isDarkMode ? 'dark' : 'light'}`}>
+        Backend: {backendStatus === 'connected' ? '🟢 Connected' : 
+                  backendStatus === 'checking' ? '🟡 Checking...' : 
+                  backendStatus === 'error' ? '🟠 Error' : '🔴 Disconnected'}
+      </div>
     </div>
   );
 }
 
 export default App;
-

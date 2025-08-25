@@ -11,7 +11,6 @@ const ChatInterface = ({
   isDarkMode 
 }) => {
   const [inputValue, setInputValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
