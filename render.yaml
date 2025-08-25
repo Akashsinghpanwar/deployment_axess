@@ -23,8 +23,9 @@ services:
         value: gpt-4o
 
   # Frontend Static Site
-  - type: static
+  - type: web
     name: axess-frontend
+    env: static
     plan: free
     buildCommand: npm install && npm run build
     staticPublishPath: ./build
