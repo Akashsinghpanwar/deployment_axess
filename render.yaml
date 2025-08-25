@@ -1,0 +1,34 @@
+services:
+  # Backend API Service
+  - type: web
+    name: axess-backend-api
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: LLAMA_CLOUD_API_KEY
+        sync: false
+      - key: LLAMA_CLOUD_ORG_ID
+        sync: false
+      - key: LLAMA_CLOUD_PROJECT_NAME
+        value: Akash-Ai
+      - key: LLAMA_CLOUD_INDEX_NAME
+        value: AKASHA-AI
+      - key: OPENAI_MODEL
+        value: gpt-4o
+
+  # Frontend Static Site
+  - type: web
+    name: axess-frontend
+    env: static
+    plan: starter
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://axess-backend-api.onrender.com

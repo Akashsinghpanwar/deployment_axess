@@ -21,7 +21,8 @@ function App() {
     const testBackendConnection = async () => {
       try {
         console.log('Testing backend connection...');
-        const response = await fetch('/chat', {
+        const apiUrl = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
+        const response = await fetch(`${apiUrl}/chat`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -79,12 +80,13 @@ function App() {
 
     try {
       console.log('Sending message to backend:', message);
-      console.log('Backend URL:', '/chat');
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
+      console.log('Backend URL:', `${apiUrl}/chat`);
       
       const requestBody = JSON.stringify({ query: message });
       console.log('Request body:', requestBody);
       
-      const response = await fetch('/chat', {
+      const response = await fetch(`${apiUrl}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -307,7 +309,8 @@ function App() {
   const testBackendConnection = async () => {
     try {
       console.log('Testing backend connection...');
-      const response = await fetch('/chat', {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
+      const response = await fetch(`${apiUrl}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
