@@ -357,6 +357,35 @@
   }
 }
 
+/* Typing Cursor Animation */
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: currentColor;
+  margin-left: 2px;
+  animation: blink 1s infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Streaming Message Styles */
+.message.assistant .message-text {
+  transition: all 0.1s ease;
+}
+
+.message.assistant.isStreaming .message-text {
+  border-right: 2px solid transparent;
+}
+
 /* Responsive Design - Laptop Specific */
 /* Large Laptops (17-inch and above) */
 @media (min-width: 1920px) {

@@ -21,7 +21,7 @@ function App() {
     const testBackendConnection = async () => {
       try {
         console.log('Testing backend connection...');
-        const response = await fetch('http://127.0.0.1:8000/chat', {
+        const response = await fetch('/chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -65,29 +65,49 @@ function App() {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
+    // Create a placeholder for the streaming response
+    const streamingMessageId = Date.now() + 1;
+    const streamingMessage = {
+      id: streamingMessageId,
+      text: '',
+      sender: 'assistant',
+      timestamp: new Date().toLocaleTimeString(),
+      isStreaming: true
+    };
+
+    setMessages(prev => [...prev, streamingMessage]);
+
     try {
-      // Call local endpoint
       console.log('Sending message to backend:', message);
-      const response = await fetch('http://127.0.0.1:8000/chat', {
+      console.log('Backend URL:', '/chat');
+      
+      const requestBody = JSON.stringify({ query: message });
+      console.log('Request body:', requestBody);
+      
+      const response = await fetch('/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({ query: message }),
+        body: requestBody,
+        mode: 'cors',
       });
 
       console.log('Backend response status:', response.status);
       
       if (response.ok) {
-        const data = await response.json();
-        console.log('Backend response data:', data);
-        const assistantMessage = {
-          id: Date.now() + 1,
-          text: data.answer, // Only display the answer field
-          sender: 'assistant',
-          timestamp: new Date().toLocaleTimeString()
-        };
-        setMessages(prev => [...prev, assistantMessage]);
+        // Check if response supports streaming
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('text/event-stream')) {
+          // Handle Server-Sent Events streaming
+          await handleStreamingResponse(response, streamingMessageId);
+        } else {
+          // Handle regular JSON response with simulated streaming
+          const data = await response.json();
+          console.log('Backend response data:', data);
+          await simulateStreamingResponse(data.answer, streamingMessageId);
+        }
       } else {
         console.error('Backend error status:', response.status);
         const errorText = await response.text();
@@ -96,10 +116,103 @@ function App() {
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      showToastMessage(`Connection error: ${error.message}. Please check if your backend is running on http://127.0.0.1:8000`);
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+      
+      let errorMessage = 'Connection error. ';
+      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+        errorMessage += 'Cannot connect to backend. Please check if your backend is running on http://127.0.0.1:8000';
+      } else if (error.name === 'TypeError' && error.message.includes('CORS')) {
+        errorMessage += 'CORS error. Your backend needs to allow requests from http://localhost:3000';
+      } else {
+        errorMessage += error.message;
+      }
+      
+      showToastMessage(errorMessage);
+      
+      // Remove the streaming message on error
+      setMessages(prev => prev.filter(msg => msg.id !== streamingMessageId));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle Server-Sent Events streaming
+  const handleStreamingResponse = async (response, messageId) => {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+            if (data === '[DONE]') {
+              // Streaming complete
+              setMessages(prev => prev.map(msg => 
+                msg.id === messageId 
+                  ? { ...msg, isStreaming: false }
+                  : msg
+              ));
+              return;
+            }
+            
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.chunk) {
+                setMessages(prev => prev.map(msg => 
+                  msg.id === messageId 
+                    ? { ...msg, text: msg.text + parsed.chunk }
+                    : msg
+                ));
+              }
+            } catch (e) {
+              console.warn('Failed to parse streaming data:', data);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error reading stream:', error);
+    }
+  };
+
+  // Simulate streaming for regular JSON responses
+  const simulateStreamingResponse = async (fullText, messageId) => {
+    // Split text into words and punctuation
+    const words = fullText.split(/(\s+)/);
+    let currentText = '';
+
+    for (let i = 0; i < words.length; i++) {
+      currentText += words[i];
+      
+      setMessages(prev => prev.map(msg => 
+        msg.id === messageId 
+          ? { ...msg, text: currentText }
+          : msg
+      ));
+
+      // Add a small delay between words for natural flow
+      await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
+    }
+
+    // Mark streaming as complete
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, isStreaming: false }
+        : msg
+    ));
   };
 
   const startRecording = () => {
@@ -175,7 +288,7 @@ function App() {
   const testBackendConnection = async () => {
     try {
       console.log('Testing backend connection...');
-      const response = await fetch('http://127.0.0.1:8000/chat', {
+      const response = await fetch('/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -244,6 +357,21 @@ function App() {
         Backend: {backendStatus === 'connected' ? '🟢 Connected' : 
                   backendStatus === 'checking' ? '🟡 Checking...' : 
                   backendStatus === 'error' ? '🟠 Error' : '🔴 Disconnected'}
+        <button 
+          onClick={testBackendConnection}
+          style={{
+            marginLeft: '10px',
+            padding: '4px 8px',
+            fontSize: '10px',
+            background: 'rgba(255, 255, 255, 0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            borderRadius: '4px',
+            color: 'inherit',
+            cursor: 'pointer'
+          }}
+        >
+          Test
+        </button>
       </div>
     </div>
   );

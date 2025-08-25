@@ -81,7 +81,12 @@ const ChatInterface = ({
             {messages.map((message) => (
               <div key={message.id} className={`message ${message.sender} ${message.isError ? 'error' : ''}`}>
                 <div className="message-content">
-                  <div className="message-text">{message.text}</div>
+                  <div className="message-text">
+                    {message.text}
+                    {message.isStreaming && (
+                      <span className="typing-cursor">|</span>
+                    )}
+                  </div>
                   <div className="message-timestamp">
                     {formatTimestamp(message.timestamp)}
                     <button 
