@@ -190,21 +190,40 @@ function App() {
 
   // Simulate streaming for regular JSON responses
   const simulateStreamingResponse = async (fullText, messageId) => {
-    // Split text into words and punctuation
-    const words = fullText.split(/(\s+)/);
+    // Split text into natural chunks for smoother streaming
+    const chunks = fullText.split(/([.!?]\s+|\s+)/);
     let currentText = '';
 
-    for (let i = 0; i < words.length; i++) {
-      currentText += words[i];
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      if (!chunk) continue;
+
+      currentText += chunk;
       
+      // Update the message with current text
       setMessages(prev => prev.map(msg => 
         msg.id === messageId 
           ? { ...msg, text: currentText }
           : msg
       ));
 
-      // Add a small delay between words for natural flow
-      await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
+      // Calculate delay based on chunk type and length
+      let delay;
+      if (chunk.match(/[.!?]\s*$/)) {
+        // Longer pause for sentence endings
+        delay = 150 + Math.random() * 100;
+      } else if (chunk.match(/^\s+$/)) {
+        // Very short delay for whitespace
+        delay = 5;
+      } else if (chunk.length > 10) {
+        // Medium delay for longer words/phrases
+        delay = 40 + Math.random() * 30;
+      } else {
+        // Standard delay for regular words
+        delay = 20 + Math.random() * 25;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
 
     // Mark streaming as complete

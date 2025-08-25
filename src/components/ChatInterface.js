@@ -1,5 +1,38 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import './ChatInterface.css';
+
+// Memoized message component for better performance
+const Message = memo(({ message, onCopy }) => {
+  const formatTimestamp = (timestamp) => {
+    return new Date(timestamp).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
+  return (
+    <div className={`message ${message.sender} ${message.isError ? 'error' : ''}`}>
+      <div className="message-content">
+        <div className="message-text">
+          {message.text}
+          {message.isStreaming && (
+            <span className="typing-cursor">|</span>
+          )}
+        </div>
+        <div className="message-timestamp">
+          {formatTimestamp(message.timestamp)}
+          <button 
+            className="copy-button" 
+            onClick={() => onCopy(message.text)}
+            title="Copy message"
+          >
+            📋
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
 
 const ChatInterface = ({ 
   messages, 
@@ -20,6 +53,17 @@ const ChatInterface = ({
 
   useEffect(() => {
     scrollToBottom();
+  }, [messages]);
+
+  // Add smooth scrolling for streaming messages
+  useEffect(() => {
+    const streamingMessage = messages.find(msg => msg.isStreaming);
+    if (streamingMessage) {
+      // Smooth scroll to bottom when streaming
+      setTimeout(() => {
+        scrollToBottom();
+      }, 50);
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -54,15 +98,7 @@ const ChatInterface = ({
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
-      // You could add a toast notification here
       console.log('Text copied to clipboard');
-    });
-  };
-
-  const formatTimestamp = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
     });
   };
 
@@ -79,26 +115,11 @@ const ChatInterface = ({
         ) : (
           <div className="messages-list">
             {messages.map((message) => (
-              <div key={message.id} className={`message ${message.sender} ${message.isError ? 'error' : ''}`}>
-                <div className="message-content">
-                  <div className="message-text">
-                    {message.text}
-                    {message.isStreaming && (
-                      <span className="typing-cursor">|</span>
-                    )}
-                  </div>
-                  <div className="message-timestamp">
-                    {formatTimestamp(message.timestamp)}
-                    <button 
-                      className="copy-button" 
-                      onClick={() => copyToClipboard(message.text)}
-                      title="Copy message"
-                    >
-                      📋
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <Message 
+                key={message.id} 
+                message={message} 
+                onCopy={copyToClipboard}
+              />
             ))}
             {isLoading && (
               <div className="message assistant">
